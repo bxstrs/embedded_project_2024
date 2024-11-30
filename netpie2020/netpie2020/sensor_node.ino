@@ -7,10 +7,10 @@
 // NETPIE Configuration
 const char* ssid = "Your_SSID";
 const char* password = "Your_PASSWORD";
-const char* mqtt_server = "mqtt.netpie.io";
-const char* app_id = "Your_APP_ID";
-const char* key = "Your_KEY";
-const char* secret = "Your_SECRET";
+const char* mqtt_server = "broker.netpie.io";
+const char* app_id = "5877eacd-bfab-4110-8678-c1aa1c79ea19";
+const char* key = "7MdDdMg2i3YXAezbdNjZ2WJApaucDE6N";
+const char* secret = "3eyJvnDF82GBtaLTp36oNTLtVXygk6HE";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
