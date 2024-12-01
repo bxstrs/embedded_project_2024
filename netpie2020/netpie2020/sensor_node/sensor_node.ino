@@ -6,8 +6,8 @@
 #include <WebServer.h>
 
 // NETPIE Configuration
-const char* ssid = "Er";
-const char* password = "00000000";
+const char* ssid = "Sleep with me free wifi_2.4G";
+const char* password = "0814782645";
 const char* mqtt_server = "broker.netpie.io";
 const char* app_id = "5877eacd-bfab-4110-8678-c1aa1c79ea19";
 const char* key = "7MdDdMg2i3YXAezbdNjZ2WJApaucDE6N";
@@ -19,36 +19,15 @@ PubSubClient client(espClient);
 BH1750 lightMeter;
 #define DHTPIN 4
 #define DHTTYPE DHT22
-//DHT dht(DHTPIN, DHTTYPE);
-
-WebServer server(80);
-
-const char html[] PROGMEM = R"rawliteral(
-<!DOCTYPE html>
-<html>
-  >> Webserver here
-</html>
-)rawliteral";
-
-void handleRoot() {
-  server.send(200, "text/html", html);
-}
-
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(115200);
-
-  //Light intensity sensor code
-  Wire.begin(21, 22); // I2C Communication Pins
-  if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
-    Serial.println("BH1750 initialized successfully.");
-  } else {
-    Serial.println("Error initializing BH1750");
-    while (1);
-  }
-
-  //dht.begin();
-  /*
+  Wire.begin(21, 22); // SDA = GPIO 21, SCL = GPIO 22
+  lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23);
+  
+  dht.begin();
+  
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -63,36 +42,30 @@ void setup() {
       delay(5000);
     }
   }
-  */
+  
 }
 
 void loop() {
-
+  // Read light intensity
   float lux = lightMeter.readLightLevel();
-  //float temp = dht.readTemperature();
-  //float humid = dht.readHumidity();
+  float temp = dht.readTemperature();
+  float humid = dht.readHumidity();
 
-  Serial.print("Light Intensity: ");
-  Serial.print(lux);
-  Serial.print(" lux");
+  Serial.print("Light Intensity: ");Serial.print(lux);Serial.println(" lx");
+  Serial.print("Temp: "); Serial.print(temp); Serial.println(" °C ");
+  Serial.print("Humidity: "); Serial.print(humid); Serial.println(" %");
+
   
-  Serial.print("Temperature: ");
-  //Serial.println(temp);
-  Serial.print("Humidity: ");
-  //Serial.println(humid);
-
-  /*
   if (!client.connected()) {
     client.connect(app_id, key, secret);
   }
   
 
-  String data = String("{\"light\":") + //lux +
-                //",\"temperature\":" + temperature +
-                //",\"humidity\":" + humidity + 
+  String data = String("{\"light\":") + lux +
+                ",\"temperature\":" + temp +
+                ",\"humidity\":" + humid + 
                 "}";
   client.publish("@msg/sensor_data", data.c_str());
-  */
 
   delay(5000);
 }
